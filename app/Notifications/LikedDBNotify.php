@@ -34,13 +34,15 @@ class LikedDBNotify extends Notification
     { 
         $message='';
         if ($this->operation =='liked'){
-            $message ="a amie ce publication";
+            $message ="a aime ce publication";
         } 
+
        
 
         return [
             "publication"=> $this->likes->post_id,
             "title"=> $message,
+            "description" =>  $this->likes->post->description,
             'user'=>Auth::user()->name,
             'image'=>Auth::user()->image,
             'operation' => $this->operation,

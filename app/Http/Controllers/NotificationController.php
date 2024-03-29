@@ -57,16 +57,19 @@ class NotificationController extends Controller
             return response()->json(['error' => 'No unread notifications found'], 404); 
         }
     }
-     public function countNotifications(){
-        $user = Auth::user();
-        
-        $unreadNotificationsCount = $user->unreadNotifications
-            ->where('data->user_id', $user->id)
-            ->where('data->post_id', $user->id) 
-            ->count();
-    
-        return response()->json(['countNotifications' => $unreadNotificationsCount]);
-    }
+    public function countNotifications(){
+        if($count=Auth::user()->unreadNotifications->count()){
+            return response()->json(['countNotifications'=>$count]);
 
+
+        }
+        else {
+            return response()->json([['countNotifications'=>$count]], 200); 
+
+
+        }
+
+
+    }
 
 }
