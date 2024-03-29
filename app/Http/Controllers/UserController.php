@@ -69,7 +69,7 @@ class UserController extends Controller
 
     if ($query) {
         $users = User::where('name', 'like', '%' . $query . '%')
-                     ->select('name', 'email')
+                     ->select('name', 'email','image','type')
                      ->get();
     } else {
         return response()->json(['message' => 'Veuillez spécifier un terme de recherche.']);
