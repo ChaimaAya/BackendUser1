@@ -54,7 +54,7 @@ class NotificationController extends Controller
             $userUnreadNotifications->markAsRead();
             return response()->json(['message' => 'All unread notifications marked as read successfully'], 200);
         } else {
-            return response()->json(['error' => 'No unread notifications found'], 404); 
+            return response()->json(['error' => 'No unread notifications found'], 200); 
         }
     }
     public function countNotifications(){
