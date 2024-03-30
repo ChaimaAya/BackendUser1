@@ -6,7 +6,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\PasswordResetRequestController;
 use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\PublicationsController;
 
@@ -30,6 +33,15 @@ Route::middleware('auth:sanctum')->get('/getMessage/{id}', function (Request $re
 Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
     Route::post('/register',[AuthController::class,'register']);
     Route::post('/login',[AuthController::class,'login']);
+    Route::post('/sendPasswordResetLink',[PasswordResetRequestController::class,'sendEmail']);
+
+    // Route::post('/resetPassword',[ChangePasswordController::class,'passwordResetProcess']);
+    Route::post('/reset-password', [PasswordResetController::class, 'reset']);
+
+
+
+
+
     Route::get('/user',[AuthController::class,'user']);
     Route::get('/userById/{userId}', [AuthController::class, 'userById']);
     Route::post('/ajouteTask',[CalendarController::class,'store']);
