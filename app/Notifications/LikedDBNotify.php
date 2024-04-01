@@ -31,13 +31,13 @@ class LikedDBNotify extends Notification
     }
 
     public function toDataBase($notifiable)
-    { 
+    {
         $message='';
         if ($this->operation =='liked'){
             $message ="a aime ce publication";
-        } 
+        }
 
-       
+
 
         return [
             "publication"=> $this->likes->post_id,
@@ -47,14 +47,14 @@ class LikedDBNotify extends Notification
             'image'=>Auth::user()->image,
             'operation' => $this->operation,
 
-            
+
         ];
     }
     // public function toBoradcast($notifiable){
     //     $message='';
     //     if ($this->operation =='liked'){
     //         $message ="a amie ce publication";
-    //     } 
+    //     }
     //     return new BroadcastMessage([
     //         "publication"=> $this->likes->post_id,
     //         "title"=> $message,
