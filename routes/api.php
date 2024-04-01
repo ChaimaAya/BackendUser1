@@ -5,9 +5,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReclamationController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PublicationsController;
 
 /*
@@ -74,6 +75,12 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
      Route::get('/markAllRead',[NotificationController::class,'markAsReadAll']);
      Route::get('/markAsRead/{id}',[NotificationController::class,'markAsRead']);
          Route::get('/countNotifications',[NotificationController::class,'countNotifications']);
+
+         Route::post('/follow', [FollowController::class, 'follow']);
+         Route::delete('/unfollow/{id}', [FollowController::class, 'unfollow']);
+         Route::get('/checkFollow/{userId}', [FollowController::class, 'checkFollow']);
+
+
 
 
 });
