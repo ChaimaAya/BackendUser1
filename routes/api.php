@@ -79,8 +79,4 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
          Route::post('/follow', [FollowController::class, 'follow']);
          Route::delete('/unfollow/{id}', [FollowController::class, 'unfollow']);
          Route::get('/checkFollow/{userId}', [FollowController::class, 'checkFollow']);
-
-
-
-
 });
