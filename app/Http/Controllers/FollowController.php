@@ -47,10 +47,10 @@ class FollowController extends Controller
         $user=Auth::user();
         $followedIds = Follower::where('user_id', $user->id)->pluck('follower_id');
         $followedPersons = User::whereIn('id', $followedIds)->get();
-        return response()->json(["listeFollowers"=>$followedPersons]);
+        return response()->json($followedPersons);
 
-
-
+                           
+                            
     }
 
     public function getUtilisateurs()
@@ -59,5 +59,4 @@ class FollowController extends Controller
 
         return Response()->json($users);
     }
-
 }
