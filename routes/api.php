@@ -87,9 +87,11 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
      Route::get('/markAllRead',[NotificationController::class,'markAsReadAll']);
      Route::get('/markAsRead/{id}',[NotificationController::class,'markAsRead']);
          Route::get('/countNotifications',[NotificationController::class,'countNotifications']);
-3
+
 
          Route::post('/follow', [FollowController::class, 'follow']);
          Route::delete('/unfollow/{id}', [FollowController::class, 'unfollow']);
          Route::get('/checkFollow/{userId}', [FollowController::class, 'checkFollow']);
+         Route::get('/followerPersonns', [FollowController::class, 'PersonnsFollow']);
+
 });
