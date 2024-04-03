@@ -49,9 +49,15 @@ class FollowController extends Controller
         $followedPersons = User::whereIn('id', $followedIds)->get();
         return response()->json(["listeFollowers"=>$followedPersons]);
 
-                           
-                            
+
+
     }
 
+    public function getUtilisateurs()
+    {
+        $users = User::whereIn('type', ['investisseur', 'fondateur'])->get();
+
+        return Response()->json($users);
+    }
 
 }
