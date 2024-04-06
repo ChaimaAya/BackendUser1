@@ -53,10 +53,14 @@ class FollowController extends Controller
                             
     }
 
-    public function getUtilisateurs()
+ public function getUtilisateurs()
     {
-        $users = User::whereIn('type', ['investisseur', 'fondateur'])->get();
+        $user = Auth::user();
 
-        return Response()->json($users);
+        $users = User::whereNotIn('id', [$user->id])
+                        ->whereIn('type', ['investisseur', 'fondateur'])
+                        ->get();
+
+        return response()->json($users);
     }
 }
