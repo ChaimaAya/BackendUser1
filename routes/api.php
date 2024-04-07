@@ -5,14 +5,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\ChangePasswordController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\PasswordResetController;
-use App\Http\Controllers\PasswordResetRequestController;
-use App\Http\Controllers\ReclamationController;
-use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ReclamationController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\PasswordResetRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,5 +95,10 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
          Route::get('/checkFollow/{userId}', [FollowController::class, 'checkFollow']);
          Route::get('/followerPersonns', [FollowController::class, 'PersonnsFollow']);
          Route::get('/getUtilisateurs', [FollowController::class, 'getUtilisateurs']);
+
+          //juste test de paiement
+          Route::post('/generate-payment',[PaymentController::class, 'generatePayment']);
+          Route::post('/verify/{id}', [PaymentController::class, 'verifyPayment']);
+          Route::get('/getSecret/{id_startup}', [PaymentController::class, 'getSecret']);
 
 });
