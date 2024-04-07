@@ -98,6 +98,7 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
 
           //juste test de paiement
           Route::post('/generate-payment',[PaymentController::class, 'generatePayment']);
+          Route::post('/createCompte',[PaymentController::class, 'store']);
           Route::post('/verify/{id}', [PaymentController::class, 'verifyPayment']);
           Route::get('/getSecret/{id_startup}', [PaymentController::class, 'getSecret']);
 
