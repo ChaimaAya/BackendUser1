@@ -101,18 +101,15 @@ class AuthController extends Controller
         ]);
 
         if ($user->type === 'fondateur') {
-            // Rechercher une startup associée à l'utilisateur
             $startup = Startup::where('admin_id', $user->id)->first();
 
             if ($startup) {
-                // Si une startup est trouvée, mettre à jour ses détails
                 $startup->update([
                     'nom' => $request->input('nom'),
                     'secteur_id' => $request->input('secteur'),
                     'description' => $request->input('description'),
                 ]);
             } else {
-                // Si aucune startup n'est associée à l'utilisateur, en créer une nouvelle
                 $startup = new Startup();
                 $startup->nom = $request->input('nom');
                 $startup->secteur_id = $request->input('secteur');

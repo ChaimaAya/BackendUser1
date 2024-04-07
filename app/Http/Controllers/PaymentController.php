@@ -116,4 +116,15 @@ class PaymentController extends Controller
         }
     
     }
+    public function getCompteFlouci(){
+        $user = auth()->user();
+        $startup = $user->startups->first();
+            $compte = Flouci::where('id_startup', $startup->id)->first();
+            if ($compte) {
+                return response()->json( $compte, 200);
+            } else {
+                return response()->json(['message' => 'Compte Flouci non trouvé pour cette startup'], 404);
+            }
+        
+    }
 }
