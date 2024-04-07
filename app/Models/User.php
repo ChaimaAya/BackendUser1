@@ -60,5 +60,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Publication::class);
     }
+    public function startups()
+    {
+        return $this->hasMany(Startup::class, 'admin_id');
+    }
 
 }

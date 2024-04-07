@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Flouci;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
@@ -76,5 +78,42 @@ class PaymentController extends Controller
         }
 
         return null;
+    }
+    public function store(Request $request){
+        $validator = Validator::make($request->all(), [
+            'app_public' => 'required',
+            'app_secret' => 'required',
+            'amount'=>'required'
+        ]);
+        if ($validator->fails()) {
+            $data = [
+                'status' => 422,
+                'message' => $validator->messages()
+            ];
+            return response()->json($data, 422);
+        } else {
+            $authenticatedUser = Auth::user();
+            if($authenticatedUser->type !== 'fondateur') {
+                $data = [
+                    'status' => 403,
+                    'message' => 'Vous n\'avez pas les autorisations nécessaires pour effectuer cette action.'
+                ];
+                return response()->json($data, 403);
+            }
+    
+            $compte = new Flouci();
+            $compte->app_public = $request->app_public;
+            $compte->app_secret = $request->app_secret;
+            $compte->amount = $request->amount;
+            $compte->id_startup = $authenticatedUser->startups->first()->id; // Utilisation de la relation pour récupérer l'id de la première startup associée à l'utilisateur authentifié
+            $compte->save();
+    
+            $data = [
+                'status' => 200,
+                'message' => 'Données créées avec succès'
+            ];
+            return response()->json($data, 200);
+        }
+    
     }
 }
