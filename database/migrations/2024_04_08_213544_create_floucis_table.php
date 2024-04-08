@@ -18,10 +18,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id_startup');
             $table->decimal('amount', 10, 2);
             $table->timestamps();
-
             $table->foreign('id_startup')->references('id')->on('startups')->onDelete('cascade');
         });
     }
+
 
     /**
      * Reverse the migrations.
