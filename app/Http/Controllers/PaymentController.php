@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Flouci;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 
 class PaymentController extends Controller
 {
@@ -28,12 +29,13 @@ class PaymentController extends Controller
                 'amount' => number_format($flouciData['amount'], 0, '.', ''),
                 'accept_card' => true,
                 'session_timeout_secs' => 1200,
-                'success_link' => "http://127.0.0.1:3000/udateProfile",
-                'fail_link' => "http://127.0.0.1:3000/fail",
+                'success_link' => "http://127.0.0.1:3000/success",
+                'fail_link' => "http://127.0.0.1:3000/failed",
                 'developer_tracking_id' => uniqid(),
             ]);
 
             if ($response->successful()) {
+                $transaction = $this->saveTransaction($request, $response->json()['result']['payment_id'], $flouciData['id_flouci']);
                 return $response->json();
             } else {
                 return response()->json(['error' => 'Une erreur est survenue lors de la génération du paiement.'], $response->status());
@@ -42,6 +44,38 @@ class PaymentController extends Controller
             return response()->json(['error' => 'Données Flouci non trouvées pour l\'ID de startup donné.'], 404);
         }
     }
+
+
+    public function testExist()
+    {
+        $user = Auth::user();
+
+        if ($user->transactions()->exists()) {
+            return response()->json(['error' => 'Vous avez déjà effectué un investissement.'], 403);
+        } else {
+            return response()->json(['message' => 'Aucun investissement existant pour cet utilisateur.'], 200);
+        }
+    }
+
+
+    public function saveTransaction(Request $request, $payment_id, $id_flouci) {
+        $user = Auth::user();
+
+        if ($user) {
+            $transaction = new Transaction();
+
+            $transaction->payment_id = $payment_id;
+            $transaction->id_investisseur = $user->id;
+            $transaction->id_floucis = $id_flouci;
+
+            $transaction->save();
+
+            return $transaction;
+        } else {
+            return response()->json(['error' => 'Utilisateur non authentifié'], 401);
+        }
+    }
+
 
 
     public function verifyPayment($payment_id)
@@ -73,7 +107,8 @@ class PaymentController extends Controller
             return [
                 'app_public' => $flouci->app_public,
                 'app_secret' => $flouci->app_secret,
-                'amount' => $flouci->amount
+                'amount' => $flouci->amount,
+                'id_flouci' => $flouci->id,
             ];
         }
 
@@ -100,21 +135,21 @@ class PaymentController extends Controller
                 ];
                 return response()->json($data, 403);
             }
-    
+
             $compte = new Flouci();
             $compte->app_public = $request->app_public;
             $compte->app_secret = $request->app_secret;
             $compte->amount = $request->amount;
-            $compte->id_startup = $authenticatedUser->startups->first()->id; // Utilisation de la relation pour récupérer l'id de la première startup associée à l'utilisateur authentifié
+            $compte->id_startup = $authenticatedUser->startups->first()->id;
             $compte->save();
-    
+
             $data = [
                 'status' => 200,
                 'message' => 'Données créées avec succès'
             ];
             return response()->json($data, 200);
         }
-    
+
     }
     public function getCompteFlouci(){
         $user = auth()->user();
@@ -125,6 +160,6 @@ class PaymentController extends Controller
             } else {
                 return response()->json(['message' => 'Compte Flouci non trouvé pour cette startup'], 404);
             }
-        
+
     }
 }

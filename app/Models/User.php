@@ -3,13 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
+use Illuminate\Http\Request;
+use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Http\Request;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -64,5 +64,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Startup::class, 'admin_id');
     }
-
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

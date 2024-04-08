@@ -100,7 +100,7 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
           Route::post('/generate-payment',[PaymentController::class, 'generatePayment']);
           Route::post('/createCompte',[PaymentController::class, 'store']);
           Route::get('/getCompteCorrdonnees',[PaymentController::class, 'getCompteFlouci']);
-          
+
           Route::post('/verify/{id}', [PaymentController::class, 'verifyPayment']);
           Route::get('/getSecret/{id_startup}', [PaymentController::class, 'getSecret']);
 
