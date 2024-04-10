@@ -103,5 +103,6 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
 
           Route::post('/verify/{id}', [PaymentController::class, 'verifyPayment']);
           Route::get('/getSecret/{id_startup}', [PaymentController::class, 'getSecret']);
+          Route::get('/investmentHistory', [PaymentController::class, 'investmentHistory']);
 
 });
