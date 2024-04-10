@@ -57,6 +57,23 @@ class PaymentController extends Controller
         }
     }
 
+    public function investmentHistory(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        $investmentHistory = Transaction::where('id_investisseur', $userId)
+            ->with('flouci.startup')
+            ->get()
+            ->map(function ($transaction) {
+                return [
+                    'startup_name' => optional($transaction->flouci->startup)->nom,
+                    'amount' => optional($transaction->flouci)->amount,
+                    'date' => $transaction->created_at->format('Y-m-d H:i:s'),
+                ];
+            });
+
+        return response()->json($investmentHistory);
+    }
 
     public function saveTransaction(Request $request, $payment_id, $id_flouci) {
         $user = Auth::user();
