@@ -139,9 +139,9 @@ class PublicationsController extends Controller
         if (Auth::check()) {
             $validator = Validator::make($request->all(), [
                 'description' => 'required|string|max:200',
-                'file' => 'required|mimes:jpg,png,jpeg,mp4,mov,avi|max:20480',
+                // 'file' => 'nullable|file|mimes:jpg,png,jpeg,mp4,mov,avi|max:20480',
             ]);
-
+    
             if ($validator->fails()) {
                 $data = [
                     'status' => 422,
@@ -150,32 +150,34 @@ class PublicationsController extends Controller
                 return response()->json($data, 422);
             } else {
                 $authenticatedUser = Auth::user();
-
-                if ($request->has('file')) {
+    
+                $filename = null;
+    
+                if ($request->hasFile('file')) {
                     $file = $request->file('file');
                     $filename = time() . '.' . $file->getClientOriginalExtension();
                     $path = 'uploads/';
                     $file->move($path, $filename);
                 }
-
+    
                 $publication = new Publication();
                 $publication->description = $request->description;
                 $publication->file = $filename;
                 $publication->user_id = $authenticatedUser->id;
                 $publication->save();
-
+    
                 event(new MyEvent($publication));
-
+    
                 $data = [
                     'status' => 200,
-                    'message' => 'Données créées avec succès'
+                    'message' => 'Données crees avec succes'
                 ];
                 return response()->json($data, 200);
             }
         } else {
             $data = [
                 'status' => 401,
-                'message' => 'Utilisateur non authentifié'
+                'message' => 'Utilisateur non authentifie'
             ];
             return response()->json($data, 401);
         }
