@@ -13,6 +13,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\PasswordResetRequestController;
 
 /*
@@ -104,5 +105,10 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
           Route::post('/verify/{id}', [PaymentController::class, 'verifyPayment']);
           Route::get('/getSecret/{id_startup}', [PaymentController::class, 'getSecret']);
           Route::get('/investmentHistory', [PaymentController::class, 'investmentHistory']);
+
+          //chat
+          Route::post('/conversation/{id}',[ChatController::class,'createConversation']);
+          Route::post('/message/{id}',[ChatController::class,'store']);
+          Route::get('/showConversation/{id}',[ChatController::class,'showConversation']);
 
 });
