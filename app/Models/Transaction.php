@@ -26,8 +26,5 @@ class Transaction extends Model
     {
         return $this->belongsTo(Flouci::class, 'id_floucis');
     }
-
-
-
-
 }
+
