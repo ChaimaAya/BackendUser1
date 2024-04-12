@@ -71,6 +71,8 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
     Route::put('/publications/{id}/edit', [PublicationsController::class, 'update']);
     Route::delete('/publications/{id}/', [PublicationsController::class, 'destroy']);
 
+    Route::get('/nbposts',[PublicationsController::class,'nbPosts']);
+
     Route::post('/liked/{id}', [PublicationsController::class, 'like']);
     Route::put('/disliked/{id}', [PublicationsController::class, 'dislike']);
 
@@ -90,7 +92,7 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
      Route::get('/markAsRead/{id}',[NotificationController::class,'markAsRead']);
          Route::get('/countNotifications',[NotificationController::class,'countNotifications']);
 
-
+     //Routes follower
          Route::post('/follow', [FollowController::class, 'follow']);
          Route::delete('/unfollow/{id}', [FollowController::class, 'unfollow']);
          Route::get('/checkFollow/{userId}', [FollowController::class, 'checkFollow']);
