@@ -46,21 +46,27 @@ class PaymentController extends Controller
     }
 
 
-    public function testExist()
+    public function testExist(Request $request)
     {
         $user = Auth::user();
+        $startupId = $request->input('id_startup');
 
-        if ($user->transactions()->exists()) {
-            return response()->json(['error' => 'Vous avez déjà effectué un investissement.'], 403);
-        } else {
-            return response()->json(['message' => 'Aucun investissement existant pour cet utilisateur.'], 200);
-        }
+        $existingTransaction = Transaction::where('id_investisseur', $user->id)
+                                           ->whereHas('flouci', function ($query) use ($startupId) {
+                                               $query->where('id_startup', $startupId);
+                                           })->exists();
+
+        return response()->json(['invested' => $existingTransaction]);
     }
+
+
+
+
+
 
     public function investmentHistory(Request $request)
     {
         $userId = $request->user()->id;
-
         $investmentHistory = Transaction::where('id_investisseur', $userId)
             ->with('flouci.startup')
             ->get()
@@ -71,22 +77,17 @@ class PaymentController extends Controller
                     'date' => $transaction->created_at->format('Y-m-d H:i:s'),
                 ];
             });
-
         return response()->json($investmentHistory);
     }
 
     public function saveTransaction(Request $request, $payment_id, $id_flouci) {
         $user = Auth::user();
-
         if ($user) {
             $transaction = new Transaction();
-
             $transaction->payment_id = $payment_id;
             $transaction->id_investisseur = $user->id;
             $transaction->id_floucis = $id_flouci;
-
             $transaction->save();
-
             return $transaction;
         } else {
             return response()->json(['error' => 'Utilisateur non authentifié'], 401);
@@ -98,15 +99,12 @@ class PaymentController extends Controller
     public function verifyPayment($payment_id)
     {
         $url = 'https://developers.flouci.com/api/verify_payment/' . $payment_id;
-
         $headers = [
             'Content-Type' => 'application/json',
             'apppublic' => 'dcc7d5ae-f0b8-4d68-9d95-4d9f735cecc2',
             'appsecret' => '74556c91-2025-4bbb-8664-ae6a16b536fb'
         ];
-
         $response = Http::withHeaders($headers)->get($url);
-
         if ($response->successful()) {
             return $response->json();
         } else {
@@ -152,14 +150,12 @@ class PaymentController extends Controller
                 ];
                 return response()->json($data, 403);
             }
-
             $compte = new Flouci();
             $compte->app_public = $request->app_public;
             $compte->app_secret = $request->app_secret;
             $compte->amount = $request->amount;
             $compte->id_startup = $authenticatedUser->startups->first()->id;
             $compte->save();
-
             $data = [
                 'status' => 200,
                 'message' => 'Données créées avec succès'

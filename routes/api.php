@@ -112,5 +112,6 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
           Route::post('/conversation/{id}',[ChatController::class,'createConversation']);
           Route::post('/message/{id}',[ChatController::class,'store']);
           Route::get('/showConversation/{id}',[ChatController::class,'showConversation']);
+          Route::post('/testExist', [PaymentController::class, 'testExist']);
 
 });
