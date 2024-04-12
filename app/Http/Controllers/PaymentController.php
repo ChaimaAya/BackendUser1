@@ -35,7 +35,14 @@ class PaymentController extends Controller
             ]);
 
             if ($response->successful()) {
+                // Sauvegarder la transaction
                 $transaction = $this->saveTransaction($request, $response->json()['result']['payment_id'], $flouciData['id_flouci']);
+
+                // Mettre à jour le montant total dans la table Flouci
+                $flouci = Flouci::find($flouciData['id_flouci']);
+                $flouci->montant_total += $flouciData['amount']; // Ajouter le montant du paiement au montant total existant
+                $flouci->save();
+
                 return $response->json();
             } else {
                 return response()->json(['error' => 'Une erreur est survenue lors de la génération du paiement.'], $response->status());
@@ -44,6 +51,7 @@ class PaymentController extends Controller
             return response()->json(['error' => 'Données Flouci non trouvées pour l\'ID de startup donné.'], 404);
         }
     }
+
 
 
     public function testExist(Request $request)

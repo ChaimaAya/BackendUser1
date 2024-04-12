@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('app_secret');
             $table->unsignedBigInteger('id_startup');
             $table->decimal('amount', 10, 2);
+            $table->decimal('montant_total', 10, 2)->default(0);
             $table->timestamps();
             $table->foreign('id_startup')->references('id')->on('startups')->onDelete('cascade');
         });
