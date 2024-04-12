@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Flouci;
+use App\Models\Startup;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -137,6 +138,18 @@ class PaymentController extends Controller
 
         return null;
     }
+
+
+    public function checkFlouciExistence(Request $request)
+    {
+        $startupId = $request->input('id_startup');
+
+        $flouciExists = Flouci::where('id_startup', $startupId)->exists();
+
+        return response()->json(['exists' => $flouciExists]);
+    }
+
+
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
             'app_public' => 'required',
