@@ -149,6 +149,50 @@ class PaymentController extends Controller
         return response()->json(['exists' => $flouciExists]);
     }
 
+    public function investorsAndTransactionDatesOfUserStartup(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $startup = $user->startups->first();
+
+        if (!$startup) {
+            return response()->json(['error' => 'User has no associated startup'], 404);
+        }
+
+        $startupId = $startup->id;
+
+        $transactions = Transaction::whereHas('flouci', function ($query) use ($startupId) {
+            $query->where('id_startup', $startupId);
+        })->with('investisseur')->get();
+
+        if ($transactions->isEmpty()) {
+            return response()->json(['error' => 'No transactions found for the user and associated startup'], 404);
+        }
+
+        $investorsAndDates = $transactions->map(function ($transaction) {
+            return [
+                'investor_name' => optional($transaction->investisseur)->name, // Nom de l'investisseur
+                'transaction_date' => $transaction->created_at->format('Y-m-d H:i:s'),
+            ];
+        });
+
+        return response()->json($investorsAndDates);
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [

@@ -113,6 +113,7 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
           Route::post('/message/{id}',[ChatController::class,'store']);
           Route::get('/showConversation/{id}',[ChatController::class,'showConversation']);
           Route::get('/getfloucistartup/{id}',[PaymentController::class,'getStartupDetails']);
-          Route::post('checkFlouciExistence', [PaymentController::class, 'checkFlouciExistence']);
+          Route::post('testExist', [PaymentController::class, 'checkFlouciExistence']);
+          Route::get('/investorsTransactions', [PaymentController::class, 'investorsAndTransactionDatesOfUserStartup']);
 
 });
