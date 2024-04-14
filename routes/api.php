@@ -54,7 +54,7 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
     Route::get('/user',[AuthController::class,'user']);
     Route::get('/secteurs',[AuthController::class,'secteurs']);
     Route::put('/updateprofile',[AuthController::class,'updateProfile']);
-    // Route::get('/startup',[AuthController::class,'getStartupDetailsForUser']);
+    Route::get('/startup',[AuthController::class,'getStartupDetailsForUser']);
     Route::get('/startup/{id}',[AuthController::class,'getStartupDetailsForUserById']);
     Route::get('/getTasks',[CalendarController::class,'getTasks']);
     Route::post('/logout',[AuthController::class,'logout']);
@@ -71,6 +71,7 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
     Route::put('/publications/{id}/edit', [PublicationsController::class, 'update']);
     Route::delete('/publications/{id}/', [PublicationsController::class, 'destroy']);
 
+    Route::get('/nbposts',[PublicationsController::class,'nbPosts']);
 
     Route::post('/liked/{id}', [PublicationsController::class, 'like']);
     Route::put('/disliked/{id}', [PublicationsController::class, 'dislike']);
@@ -89,7 +90,7 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
      Route::get('/notifications',[NotificationController::class,'LikedNotifications']);
      Route::get('/markAllRead',[NotificationController::class,'markAsReadAll']);
      Route::get('/markAsRead/{id}',[NotificationController::class,'markAsRead']);
-        //  Route::get('/countNotifications',[NotificationController::class,'countNotifications']);
+         Route::get('/countNotifications',[NotificationController::class,'countNotifications']);
 
      //Routes follower
          Route::post('/follow', [FollowController::class, 'follow']);
