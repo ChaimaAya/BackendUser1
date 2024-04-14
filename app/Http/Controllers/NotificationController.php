@@ -29,8 +29,13 @@ class NotificationController extends Controller
                                     ->whereIn('id', $likedNotificationIds)
                                     ->select('id', 'data', 'created_at')
                                     ->get();
+        $count=$user->unreadNotifications->count();
+                            
+                            
+                                   
+                               
 
-        return response()->json(['likedNotifications' => $likedNotifications], 200);
+        return response()->json(['likedNotifications' => $likedNotifications,'count'=>$count], 200);
     }
     public function markAsRead($id)
     {
@@ -57,19 +62,6 @@ class NotificationController extends Controller
             return response()->json(['error' => 'No unread notifications found'], 200); 
         }
     }
-    public function countNotifications(){
-        if($count=Auth::user()->unreadNotifications->count()){
-            return response()->json(['countNotifications'=>$count]);
-
-
-        }
-        else {
-            return response()->json([['countNotifications'=>$count]], 200); 
-
-
-        }
-
-
-    }
+    
 
 }
