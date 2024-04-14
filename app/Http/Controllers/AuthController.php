@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Publication;
 use App\Models\User;
 use App\Models\Secteur;
 use App\Models\Startup;
@@ -143,8 +144,10 @@ class AuthController extends Controller
     }
     public function user(){
         $user = Auth::user();
-        return response()->json($user);
-   }
+        $startup = Startup::where('admin_id', $user->id)->first();
+        $countPosts=Publication::where("user_id",$user->id)->get()->count();
+        return response()->json(['user' => $user, 'startup' => $startup, 'countPosts'=>$countPosts]);
+    }
 
 
    public function userById($userId){
@@ -165,12 +168,12 @@ class AuthController extends Controller
 
 
 
-   public function getStartupDetailsForUser(Request $request)
-    {
-        $user = $request->user();
-        $startup = Startup::where('admin_id', $user->id)->first();
-        return response()->json($startup);
-    }
+//    public function getStartupDetailsForUser(Request $request)
+//     {
+//         $user = $request->user();
+//         $startup = Startup::where('admin_id', $user->id)->first();
+//         return response()->json($startup);
+//     }
 
 
     public function getStartupDetailsForUserById($userId)
