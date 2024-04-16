@@ -314,12 +314,6 @@ class PublicationsController extends Controller
         }
     }
 
-    public function nbPosts()
-    {
-        $user=auth()->user();
-        $countPosts=Publication::where("user_id",$user->id)->get()->count();
-        return response()->json($countPosts,200);
-        
-    }
+   
 
 }

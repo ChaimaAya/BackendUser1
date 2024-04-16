@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class FollowController extends Controller
 {
-    public function follow(Request $request)
+   public function follow(Request $request)
     {
         $request->validate([
             'follower_id' => 'required|exists:users,id'
@@ -29,6 +29,7 @@ class FollowController extends Controller
 
         return response()->json($follow, 201);
     }
+
 
     public function checkFollow(Request $request, $userId)
     {

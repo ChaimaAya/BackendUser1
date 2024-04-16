@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
-    public function likedNotifications(Request $request)
+       public function likedNotifications(Request $request)
     {
         $user = $request->user();
 

@@ -36,12 +36,9 @@ class PaymentController extends Controller
             ]);
 
             if ($response->successful()) {
-                // Sauvegarder la transaction
                 $transaction = $this->saveTransaction($request, $response->json()['result']['payment_id'], $flouciData['id_flouci']);
-
-                // Mettre à jour le montant total dans la table Flouci
                 $flouci = Flouci::find($flouciData['id_flouci']);
-                $flouci->montant_total += $flouciData['amount']; // Ajouter le montant du paiement au montant total existant
+                $flouci->montant_total += $flouciData['amount'];
                 $flouci->save();
 
                 return $response->json();
@@ -55,18 +52,7 @@ class PaymentController extends Controller
 
 
 
-    public function testExist(Request $request)
-    {
-        $user = Auth::user();
-        $startupId = $request->input('id_startup');
 
-        $existingTransaction = Transaction::where('id_investisseur', $user->id)
-                                           ->whereHas('flouci', function ($query) use ($startupId) {
-                                               $query->where('id_startup', $startupId);
-                                           })->exists();
-
-        return response()->json(['invested' => $existingTransaction]);
-    }
 
 
 
