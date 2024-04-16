@@ -48,5 +48,28 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+    public function publications()
+    {
+        return $this->hasMany(Publication::class);
+    }
+    public function startups()
+    {
+        return $this->hasMany(Startup::class, 'admin_id');
+    }
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+    public function followers()
+    {
+        return $this->hasMany(Follower::class);
+    }
 }
