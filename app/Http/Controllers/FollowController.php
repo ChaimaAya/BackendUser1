@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class FollowController extends Controller
 {
-    public function follow(Request $request)
+   public function follow(Request $request)
     {
         $request->validate([
             'follower_id' => 'required|exists:users,id'
@@ -20,9 +20,14 @@ class FollowController extends Controller
             'user_id' => auth()->id(),
             'follower_id' => $request->follower_id
         ]);
+        $operation="follow";
+        $utilisateursANotifier = User::where('id', '!=', Auth::id())->get();
+        Notification::send($utilisateursANotifier, new FollowDBNotify($follow, $operation));
+
 
         return response()->json($follow, 201);
     }
+
 
     public function checkFollow(Request $request, $userId)
     {
