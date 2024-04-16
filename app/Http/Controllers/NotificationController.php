@@ -23,14 +23,28 @@ class NotificationController extends Controller
                                     ->where('notifications.notifiable_id', $user->id)
                                     ->whereNull('notifications.read_at')
                                     ->pluck('notifications.id');
+        $userFollowIds = $user->followers()->pluck('id');
 
-        // Récupérer les détails des notifications
-        $likedNotifications = DB::table('notifications')
-                                    ->whereIn('id', $likedNotificationIds)
-                                    ->select('id', 'data', 'created_at')
-                                    ->get();
+    // Récupérer les IDs des notifications de suivi associées à l'utilisateur authentifié
+        $followNotificationIds = DB::table('notifications') 
+                                      ->join('users', 'notifications.notifiable_id', '=', 'users.id')
+                                      ->whereIn('data->follow', [$user->id]) 
+                                      ->where('notifications.type', 'App\Notifications\FollowDBNotify') 
+                                      ->where('notifications.notifiable_id', $user->id)
+                                      ->whereNull('notifications.read_at')
+                                      ->pluck('notifications.id');                           
+        // Fusionner les IDs de notifications aimées et de notifications de suivi
 
-        return response()->json(['likedNotifications' => $likedNotifications], 200);
+        $notificationIds = $likedNotificationIds->merge($followNotificationIds);
+
+    // Récupérer les détails des notifications
+        $notifications = DB::table('notifications')
+                            ->whereIn('id', $notificationIds)
+                            ->select('id', 'data', 'created_at')
+                            ->get();
+
+        $count = $user->unreadNotifications->count();
+        return response()->json(['notifications' => $notifications,'count'=>$count], 200);
     }
     public function markAsRead($id)
     {
@@ -57,19 +71,6 @@ class NotificationController extends Controller
             return response()->json(['error' => 'No unread notifications found'], 200); 
         }
     }
-    public function countNotifications(){
-        if($count=Auth::user()->unreadNotifications->count()){
-            return response()->json(['countNotifications'=>$count]);
-
-
-        }
-        else {
-            return response()->json([['countNotifications'=>$count]], 200); 
-
-
-        }
-
-
-    }
+    
 
 }
