@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Follower;
 use App\Models\User;
+use App\Notifications\FollowDBNotify;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
