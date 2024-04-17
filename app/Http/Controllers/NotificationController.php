@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
-       public function likedNotifications(Request $request)
+    public function likedNotifications(Request $request)
     {
         $user = $request->user();
 
@@ -43,7 +43,10 @@ class NotificationController extends Controller
                             ->select('id', 'data', 'created_at')
                             ->get();
 
-        $count = $user->unreadNotifications->count();
+        $count = DB::table('notifications')
+                        ->whereIn('id', $notificationIds)
+                        ->whereNull('read_at')
+                        ->count();                     
         return response()->json(['notifications' => $notifications,'count'=>$count], 200);
     }
     public function markAsRead($id)
