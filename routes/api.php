@@ -4,6 +4,7 @@ use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PaymentController;
@@ -12,8 +13,8 @@ use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\ChangePasswordController;
-use App\Http\Controllers\ChatController;
 use App\Http\Controllers\PasswordResetRequestController;
 
 /*
@@ -115,5 +116,8 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
           Route::get('/getfloucistartup/{id}',[PaymentController::class,'getStartupDetails']);
           Route::post('checkFlouciExistence', [PaymentController::class, 'checkFlouciExistence']);
           Route::get('/investorsTransactions', [PaymentController::class, 'investorsAndTransactionDatesOfUserStartup']);
+          Route::get('/getTaskEnAttente', [CalendarController::class, 'getTaskEnAttente']);
+          Route::put('/accept/{id}',[CalendarController::class, 'acceptTask']);
+          Route::delete('/delete/{task}',[CalendarController::class, 'deleteTask']);
 
 });
