@@ -44,12 +44,15 @@ class CalendarController extends Controller
         } else {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
-                if ($userId) {
+
+        if ($userId) {
             $tasksCreatedByUser = Task::where('created_by', $userId)
+                ->where('etat', 'accepter') // Ajouter cette condition pour filtrer par état
                 ->with('createdBy', 'assignedTo')
                 ->get();
 
             $tasksAssignedToUser = Task::where('assigned_to', $userId)
+                ->where('etat', 'accepter') // Ajouter cette condition pour filtrer par état
                 ->with('createdBy', 'assignedTo')
                 ->get();
 
@@ -66,6 +69,7 @@ class CalendarController extends Controller
                     'description' => $task->description,
                     'created_by' => $task->created_by,
                     'assigned_to' => $task->assigned_to,
+                    'etat' => $task->etat, // Ajouter l'état de la tâche
                 ];
 
                 $tasksData[] = $taskData;
@@ -82,8 +86,40 @@ class CalendarController extends Controller
 
 
 
+    public function getTaskEnAttente()
+    {
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $tasks = Task::where('assigned_to', $userId)
+                         ->where('etat', 'en_attente')
+                         ->get();
 
+            return response()->json($tasks, 200);
+        } else {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+    }
 
+    public function acceptTask($id)
+    {
+        $task = Task::findOrFail($id);
+        $task->etat = 'accepter';
+        $task->save();
+        return response()->json(['message' => 'Tâche acceptée avec succès'], 200);
+    }
+
+    public function deleteTask($id)
+    {
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json(['error' => 'La tâche n\'existe pas.'], 404);
+        }
+
+        $task->delete();
+
+        return response()->json(['message' => 'Tâche supprimée avec succès'], 200);
+    }
     public function show(Task $task)
     {
         return response()->json($task);
