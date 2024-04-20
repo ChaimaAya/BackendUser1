@@ -21,6 +21,8 @@ class UserController extends Controller
         // dd($query);
         if ($query) {
             $users = User::where('name', 'like', '%' . $query . '%')
+            ->whereIn('type', ['investisseur', 'fondateur'])
+
                             ->select('name', 'email','image','type','id')
                             ->get();
         } else {

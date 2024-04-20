@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Chat;
 use App\Models\Messages;
 use App\Models\User;
+use App\Notifications\MessageDBNotify;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+
 
 class ChatController extends Controller
 {  
@@ -86,6 +90,9 @@ class ChatController extends Controller
         $message->content = $request->content;
         $message->chat_id = $conversation->id; 
         $message->save();
+        $operation="message";
+        $utilisateursANotifier = User::where('id', '!=', Auth::id())->get();
+        Notification::send($utilisateursANotifier, new MessageDBNotify( $message, $operation));
     
         $data = [
             'status' => 200,

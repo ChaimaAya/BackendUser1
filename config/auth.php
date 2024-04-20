@@ -43,7 +43,8 @@ return [
         'api' => [
             'driver' => 'jwt',
             'provider' => 'users',
-            'hash'=>false
+            'hash'=>false,
+            'expire' => 1440 * 60,
         ],
 
     ],
