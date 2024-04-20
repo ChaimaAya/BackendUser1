@@ -41,9 +41,17 @@ class NotificationController extends Controller
             ->whereNull('read_at')
             ->pluck('id')
             ->toArray();
+
+            $MessageNotificationIds = DB::table('notifications')
+            ->where('type', 'App\Notifications\MessageDBNotify')
+            ->where('notifiable_id', $user->id)
+            ->whereNull('read_at')
+            ->pluck('id')
+            ->toArray();
+    
     
         // Fusionner les IDs de notifications aimées et de notifications de suivi
-        $notificationIds = array_merge($notificationIds, $followNotificationIds);
+        $notificationIds = array_merge($notificationIds, $followNotificationIds,$MessageNotificationIds);
     
         // Supprimer les doublons des IDs de notifications
         $notificationIds = array_unique($notificationIds);

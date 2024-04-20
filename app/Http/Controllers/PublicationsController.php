@@ -206,55 +206,8 @@ class PublicationsController extends Controller
 
 
 
-    public function edit(string $id)
-    {
-        try {
-            $publication = Publication::find($id);
-            $data = [
-                'status' => 200,
-                'publications' => $publication
-            ];
-            return response()->json($data, 200);
-        } catch (\Exception $e) {
-            $errorData = [
-                'status' => 500,
-                'error' => 'Internal Server Error',
-                'message' => $e->getMessage()
-            ];
-            return response()->json($errorData, 500);
-        }
-    }
 
-    public function update(Request $request, string $id)
-    {
-        $publication=Publication::find($id);
-
-        $filename = null;
-
-        if ($request->has('fiel')) {
-            $file = $request->file('file');
-            $filename = time().'.'.$file->getClientOriginalExtension();
-            $path='uploads/';
-            $file->move($path,$filename);
-            }
-            $publication->description = $request->description;
-            $publication->file=$filename;
-            $publication->user_id = $request->user_id;
-            $publication->save();
-
-
-            $data=[
-                'status'=>200,
-                'message'=>'data update with success'
-            ];
-            return response()->json($data,200);
-
-
-
-
-
-    }
-
+   
 
     public function destroy(string $id)
     {
