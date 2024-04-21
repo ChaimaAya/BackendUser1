@@ -144,9 +144,20 @@ class AuthController extends Controller
     }
     public function user(){
         $user = Auth::user();
-        $startup = Startup::where('admin_id', $user->id)->first();
-        $countPosts=Publication::where("user_id",$user->id)->get()->count();
-        return response()->json(['user' => $user, 'startup' => $startup, 'countPosts'=>$countPosts]);
+        if($user){
+            $startup = Startup::where('admin_id', $user->id)->first();
+            $countPosts=Publication::where("user_id",$user->id)->get()->count();
+            return response()->json(['user' => $user, 'startup' => $startup, 'countPosts'=>$countPosts]);
+
+        }
+        else {
+            $data=[
+                'status'=>401,
+                'message'=>'User not authentificated'
+            ];
+            return response()->json($data,401);
+        }
+       
     }
 
 
