@@ -20,9 +20,10 @@ class PublicationsController extends Controller
      */
     public function index()
     {
-        try {
-            $authenticatedUser = Auth::user();
-
+        
+        
+        $authenticatedUser = Auth::user();
+        if($authenticatedUser){
             $publications = Publication::where('user_id', '!=', $authenticatedUser->id)
                                         ->with('user')
                                         ->get();
@@ -42,14 +43,19 @@ class PublicationsController extends Controller
                 'publications' => $publications
             ];
             return response()->json($data, 200);
-        } catch (\Exception $e) {
-            $errorData = [
-                'status' => 500,
-                'error' => 'Internal Server Error',
-                'message' => $e->getMessage()
-            ];
-             return response()->json($errorData, 500);
         }
+
+            
+        else{
+            $errorData = [
+            'status' => 401,
+            'message' => 'user not authentificated'
+            ];
+            return response()->json($errorData, 401);
+
+        }
+
+        
     }
     public function userProfilePublications(){
         try {
@@ -122,18 +128,6 @@ class PublicationsController extends Controller
         }
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         if (Auth::check()) {
@@ -182,32 +176,6 @@ class PublicationsController extends Controller
             return response()->json($data, 401);
         }
     }
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        try {
-            $publication = Publication::find($id);
-            $data = [
-                'status' => 200,
-                'publications' => $publication
-            ];
-            return response()->json($data, 200);
-        } catch (\Exception $e) {
-            $errorData = [
-                'status' => 500,
-                'error' => 'Internal Server Error',
-                'message' => $e->getMessage()
-            ];
-            return response()->json($errorData, 500);
-        }
-    }
-
-
-
-
-   
 
     public function destroy(string $id)
     {
@@ -220,7 +188,7 @@ class PublicationsController extends Controller
         return response()->json($data,200);
     }
     public function like($id)
-{
+    {
     $post_id = $id;
     $user_id = Auth::user()->id;
 
@@ -250,10 +218,11 @@ class PublicationsController extends Controller
 
         return response()->json('You liked this post.');
     }
-}
+    }
     public function dislike($id){
         $post_id = $id;
         $user_id = Auth::user()->id;
+        
 
         $like = Like::where('post_id', $post_id)
                     ->where('user_id', $user_id)

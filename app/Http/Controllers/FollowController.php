@@ -57,21 +57,45 @@ class FollowController extends Controller
     public function PersonnsFollow()
     {
         $user=Auth::user();
-        $followedIds =  Follower::where('user_id',$user->id)->pluck('follower_id');
-        $followedPersons = User:: whereIn('id',$followedIds)->get();
+        // el user a tester inajem ikoun null ken el token maadech valid!
+        if($user){
+            $followedIds =  Follower::where('user_id',$user->id)->pluck('follower_id');
+            $followedPersons = User:: whereIn('id',$followedIds)->get();
+            return response()->json($followedPersons);
+
+        }
+        else {
+            $data=[
+                'status'=>401,
+                'message'=>'user not authentificated'
+            ];
+            return response()->json($data,401);
 
 
-        return response()->json($followedPersons);
+        }
+
     }
 
     public function getUtilisateurs()
     {
         $user = Auth::user();
-
-        $users = User::where('id', '!=', $user->id)
+        if($user){
+            $users = User::where('id', '!=', $user->id)
             ->whereIn('type', ['investisseur', 'fondateur'])
             ->get();
 
-        return response()->json($users);
+            return response()->json($users);
+
+        }
+        else{
+            $data=[
+                'status'=>401,
+                'message'=>'User not authentificated'
+
+            ];
+            return response()->json($data,401); 
+        }
+
+
     }
 }

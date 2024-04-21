@@ -11,8 +11,8 @@ class NotificationController extends Controller
     public function likedNotifications(Request $request)
     {
         $user = $request->user();
-    
-        // Récupérer les IDs des publications aimées par l'utilisateur authentifié
+        if($user){
+            // Récupérer les IDs des publications aimées par l'utilisateur authentifié
         $userPostIds = $user->publications()->pluck('id')->toArray();
     
         // Initialiser un tableau pour stocker les IDs de notifications
@@ -64,6 +64,16 @@ class NotificationController extends Controller
         $count = count($notificationIds);
     
         return response()->json(['notifications' => $notifications, 'count' => $count], 200);
+
+        }   
+        else {
+            $data=[
+                'status'=>401,
+                'message'=>'user not authentificated'
+            ];
+            return response()->json($data,401);
+        } 
+        
     }
     public function markAsRead($id)
     {
