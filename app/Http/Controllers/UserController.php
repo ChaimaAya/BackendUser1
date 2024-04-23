@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Publication;
+use App\Models\Startup;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,13 @@ class UserController extends Controller
      * Display a listing of the resource.
      */
 
+    public function CountNumber(){
+        $nbStartups=User::where('type', 'fondateur')->get()->count();
+        $nbInvestisseur=User::where('type','investisseur')->get()->count();
+        return response()->json(['nbStartups'=>$nbStartups,'nbInvestisseur'=>$nbInvestisseur]);
 
+       
+    }
 
 
     public function search(Request $request)

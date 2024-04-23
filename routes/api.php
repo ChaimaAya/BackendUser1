@@ -113,11 +113,16 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
           Route::post('/conversation/{id}',[ChatController::class,'createConversation']);
           Route::post('/message/{id}',[ChatController::class,'store']);
           Route::get('/showConversation/{id}',[ChatController::class,'showConversation']);
+
+          //payment
           Route::get('/getfloucistartup/{id}',[PaymentController::class,'getStartupDetails']);
           Route::post('checkFlouciExistence', [PaymentController::class, 'checkFlouciExistence']);
           Route::get('/investorsTransactions', [PaymentController::class, 'investorsAndTransactionDatesOfUserStartup']);
           Route::get('/getTaskEnAttente', [CalendarController::class, 'getTaskEnAttente']);
           Route::put('/accept/{id}',[CalendarController::class, 'acceptTask']);
           Route::delete('/delete/{task}',[CalendarController::class, 'deleteTask']);
+
+          //count
+          Route::get('/count', [UserController::class, 'CountNumber']);
 
 });
