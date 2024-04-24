@@ -23,22 +23,24 @@ class UserController extends Controller
 
 
     public function search(Request $request)
-    {
-        $query = $request->input('query');
-        // dd($query);
-        if ($query) {
-            $users = User::where('name', 'like', '%' . $query . '%')
-            ->whereIn('type', ['investisseur', 'fondateur'])
+{
+    $query = $request->input('query');
 
-                            ->select('name', 'email','image','type','id')
-                            ->get();
-        } else {
-            return response()->json(['message' => 'Veuillez spécifier un terme de recherche.']);
-        }
-
-        return response()->json($users);
+    if ($query) {
+        $users = User::leftJoin('startups', 'users.id', '=', 'startups.admin_id')
+            ->where(function ($search) use ($query) {
+                $search->where('users.name', 'like', '%' . $query . '%')
+                    ->orWhere('startups.nom', 'like', '%' . $query . '%');
+            })
+            ->whereIn('users.type', ['investisseur', 'fondateur'])
+            ->select('users.name as name', 'users.email', 'users.image', 'users.type', 'users.id', 'startups.nom as startup_name')
+            ->get();
+    } else {
+        return response()->json(['message' => 'Veuillez spécifier un terme de recherche.']);
     }
 
+    return response()->json($users);
+}
     public function upload(Request $request)
     {
         $user = auth()->user();
