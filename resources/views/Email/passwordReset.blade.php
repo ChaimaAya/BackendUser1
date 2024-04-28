@@ -5,6 +5,5 @@ Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation du
 <x-mail::button :url="'http://localhost:3000/' . $token ">
 Reset Password</x-mail::button>
 
-Thanks,<br>
-{{-- {{ config('app.name') }} --}}
+Thanks
 </x-mail::message>
