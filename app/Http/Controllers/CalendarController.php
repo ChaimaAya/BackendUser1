@@ -6,7 +6,10 @@ use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Notifications\CalendrierDBNotify;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+
 class CalendarController extends Controller
 {
     public function index()
@@ -102,6 +105,7 @@ class CalendarController extends Controller
 
     public function acceptTask($id)
     {
+
         $task = Task::findOrFail($id);
         $task->etat = 'accepter';
         $task->save();
@@ -175,12 +179,15 @@ class CalendarController extends Controller
 
     public function store(Request $request)
     {
+
         $start_time = $request->input('start_time');
         $end_time = $request->input('end_time');
         $title = $request->input('title');
         $description = $request->input('description');
         $created_by = Auth()->user()->id;
         $assigned_to = $request->input('assigned_to');
+        $personneAuth=User::where('id','=',$assigned_to)->get();
+
         if (empty($title)) {
             return response()->json(['error' => 'All required fields must be filled.'], 400);
         }
@@ -197,7 +204,7 @@ class CalendarController extends Controller
             "start_time" => $start_time,
             "end_time" => $end_time,
         ]);
-
+        Notification::send($personneAuth,new CalendrierDBNotify($task));
         if ($task) {
             return response()->json($task, 201);
         } else {
