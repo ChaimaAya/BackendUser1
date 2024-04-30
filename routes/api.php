@@ -55,7 +55,7 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
     Route::get('/user',[AuthController::class,'user']);
     Route::get('/secteurs',[AuthController::class,'secteurs']);
     Route::put('/updateprofile',[AuthController::class,'updateProfile']);
-    Route::get('/startup',[AuthController::class,'getStartupDetailsForUser']);
+    // Route::get('/startup',[AuthController::class,'getStartupDetailsForUser']);
     Route::get('/startup/{id}',[AuthController::class,'getStartupDetailsForUserById']);
     Route::get('/getTasks',[CalendarController::class,'getTasks']);
     Route::post('/logout',[AuthController::class,'logout']);
