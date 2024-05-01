@@ -179,23 +179,17 @@ class CalendarController extends Controller
 
     public function store(Request $request)
     {
-
         $start_time = $request->input('start_time');
         $end_time = $request->input('end_time');
         $title = $request->input('title');
         $description = $request->input('description');
         $created_by = Auth()->user()->id;
         $assigned_to = $request->input('assigned_to');
-        $personneAuth=User::where('id','=',$assigned_to)->get();
-
-        if (empty($title)) {
-            return response()->json(['error' => 'All required fields must be filled.'], 400);
-        }
+        $personneAuth = User::find($assigned_to);
 
         $color = $request->input('color', '#3788d8');
 
         $task = Task::create([
-
             'title' => $title,
             'description' => $description,
             'created_by' => $created_by,
@@ -204,7 +198,9 @@ class CalendarController extends Controller
             "start_time" => $start_time,
             "end_time" => $end_time,
         ]);
-        Notification::send($personneAuth,new CalendrierDBNotify($task));
+
+        Notification::send($personneAuth, new CalendrierDBNotify($task));
+
         if ($task) {
             return response()->json($task, 201);
         } else {
