@@ -110,9 +110,10 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
           Route::get('/investmentHistory', [PaymentController::class, 'investmentHistory']);
 
           //chat
-          Route::post('/conversation/{id}',[ChatController::class,'createConversation']);
           Route::post('/message/{id}',[ChatController::class,'store']);
           Route::get('/showConversation/{id}',[ChatController::class,'showConversation']);
+          Route::get('/showPersonsConversation',[ChatController::class,'showPersonsConversation']);
+          
 
           //payment
           Route::get('/getfloucistartup/{id}',[PaymentController::class,'getStartupDetails']);

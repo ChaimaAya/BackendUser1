@@ -14,42 +14,7 @@ use Illuminate\Support\Facades\Notification;
 
 class ChatController extends Controller
 {  
-    public function createConversation($id){
-        $from_user = auth()->user();
-        $to_user = User::find($id);
-        if (!$to_user) {
-            $data = [
-                'status' => 404,
-                'message' => 'Utilisateur introuvable'
-            ];
-            return response()->json($data, 404);
-        }
-    
-        $conversation = Chat::where(function($query) use ($from_user, $to_user) {
-                                $query->where('from_user_id', $from_user->id)
-                                      ->where('to_user_id', $to_user->id);
-                            })
-                            ->orWhere(function($query) use ($from_user, $to_user) {
-                                $query->where('from_user_id', $to_user->id)
-                                      ->where('to_user_id', $from_user->id);
-                            })
-                            ->first();
-    
-        if (!$conversation) {
-            $conversation = new Chat();
-            $conversation->from_user_id = $from_user->id;
-            $conversation->to_user_id = $to_user->id;
-            $conversation->save();
-        }
-        $data = [
-            'status' => 200,
-            'message' => 'Données créées avec succès'
-        ];
-        return response()->json($data, 200);
-    
-
-
-    }
+  
  
     public function store(Request $request, $id) {
         $validator = Validator::make($request->all(), [
@@ -140,5 +105,30 @@ class ChatController extends Controller
         $allMessages = Messages::where('chat_id', $conversation->id)->get();
     
         return response()->json($allMessages, 200);
+    }
+    public function showPersonsConversation(){
+        $authenticatedUser = auth()->user();
+    
+        if (!$authenticatedUser) {
+            $data = [
+                'status' => 401,
+                'message' => 'Utilisateur non authentifié'
+            ];
+            return response()->json($data, 401);
+        }
+        $conversations = Messages::where('from_user', $authenticatedUser->id)
+        ->orWhere('to_user', $authenticatedUser->id)
+        ->get();
+
+
+        $userIds = $conversations->pluck('from_user')
+            ->merge($conversations->pluck('to_user'))
+            ->unique();
+
+        $users = User::whereIn('id', $userIds)
+                    ->where('id', '!=', $authenticatedUser->id)
+                    ->get();
+        return response()->json($users, 200);
+    
     }
 }
