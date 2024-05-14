@@ -132,7 +132,7 @@ class PublicationsController extends Controller
     {
         if (Auth::check()) {
             $validator = Validator::make($request->all(), [
-                'description' => 'required|string|max:200',
+                'description' => 'required|string',
                 // 'file' => 'nullable|file|mimes:jpg,png,jpeg,mp4,mov,avi|max:20480',
             ]);
     
