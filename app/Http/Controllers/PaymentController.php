@@ -51,14 +51,6 @@ class PaymentController extends Controller
     }
 
 
-
-
-
-
-
-
-
-
     public function investmentHistory(Request $request)
     {
         $userId = $request->user()->id;
@@ -74,7 +66,6 @@ class PaymentController extends Controller
             });
         return response()->json($investmentHistory);
     }
-
     public function saveTransaction(Request $request, $payment_id, $id_flouci) {
         $user = Auth::user();
         if ($user) {
@@ -88,9 +79,7 @@ class PaymentController extends Controller
             return response()->json(['error' => 'Utilisateur non authentifié'], 401);
         }
     }
-
-
-
+    //ne pas utiliser
     public function verifyPayment($payment_id)
     {
         $url = 'https://developers.flouci.com/api/verify_payment/' . $payment_id;
@@ -106,9 +95,6 @@ class PaymentController extends Controller
             return response()->json(['error' => 'Une erreur est survenue lors de la vérification du paiement.'], $response->status());
         }
     }
-
-
-
     public function getSecret($id_startup)
     {
         $flouci = Flouci::where('id_startup', $id_startup)->first();
@@ -125,7 +111,7 @@ class PaymentController extends Controller
         return null;
     }
 
-
+    // ce fonction ne pas utilise
     public function checkFlouciExistence(Request $request)
     {
         $startupId = $request->input('id_startup');
@@ -134,7 +120,6 @@ class PaymentController extends Controller
 
         return response()->json(['exists' => $flouciExists]);
     }
-
     public function investorsAndTransactionDatesOfUserStartup(Request $request)
     {
         $user = $request->user();
@@ -168,17 +153,6 @@ class PaymentController extends Controller
 
         return response()->json($investorsAndDates);
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [

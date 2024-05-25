@@ -52,8 +52,14 @@ class AuthController extends Controller
             return response()->json(['error'=>'Unauthorized'],401);
         }
         return $this->createNewToken($token);
-
-
+    }
+    public function createNewToken($token){
+        return response()->json([
+            "access_token"=>$token,
+            "token_type"=>'bearer',
+            'expires_in' =>  1440 * 60,
+            'user'=>auth()->user(),
+        ]);
 
     }
     public function getUserType(Request $request)
@@ -127,22 +133,6 @@ class AuthController extends Controller
     }
 
 
-
-
-
-
-
-
-
-    public function createNewToken($token){
-        return response()->json([
-            "access_token"=>$token,
-            "token_type"=>'bearer',
-            'expires_in' =>  1440 * 60,
-            'user'=>auth()->user(),
-        ]);
-
-    }
     public function user(){
         $user = Auth::user();
         if($user){

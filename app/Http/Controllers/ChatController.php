@@ -93,12 +93,7 @@ class ChatController extends Controller
             $query->where('from_user_id', $user->id)
                   ->where('to_user_id', $authenticatedUser->id);
         })->first();
-        if (!$conversation) {
-            $conversation = new Chat();
-            $conversation->from_user_id = $authenticatedUser->id;
-            $conversation->to_user_id = $user->id;
-            $conversation->save();
-        }
+ 
     
         
     
