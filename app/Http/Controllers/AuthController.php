@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Publication;
-use App\Models\User;
 use App\Models\Secteur;
 use App\Models\Startup;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -14,14 +14,14 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api',['except'=>['login','register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|string|email|unique:users',
-            'password' => ['required', 'string', 'min:8', 'confirmed','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            'password' => ['required', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
 
         ]);
 
@@ -32,7 +32,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
-            'password' => bcrypt($request->input('password'))
+            'password' => bcrypt($request->input('password')),
         ]);
 
         return response()->json([
@@ -40,25 +40,27 @@ class AuthController extends Controller
             'user' => $user,
         ], 201);
     }
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required|string'
+            'password' => 'required|string',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        if(!$token=auth()->attempt($validator->validated())){
-            return response()->json(['error'=>'Unauthorized'],401);
+        if (!$token = auth()->attempt($validator->validated())) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $this->createNewToken($token);
     }
-    public function createNewToken($token){
+    public function createNewToken($token)
+    {
         return response()->json([
-            "access_token"=>$token,
-            "token_type"=>'bearer',
-            'expires_in' =>  1440 * 60,
-            'user'=>auth()->user(),
+            "access_token" => $token,
+            "token_type" => 'bearer',
+            'expires_in' => 3600,
+            'user' => auth()->user(),
         ]);
 
     }
@@ -82,7 +84,6 @@ class AuthController extends Controller
         return response()->json(['secteurs' => $secteurs], 200);
     }
 
-
     public function updateProfile(Request $request)
     {
         $user = auth()->user();
@@ -101,7 +102,6 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        // Mettre à jour le profil utilisateur
         $user->update([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -127,56 +127,42 @@ class AuthController extends Controller
             }
         }
 
-
-
         return response()->json(['message' => 'Profil mis à jour avec succès'], 200);
     }
 
-
-    public function user(){
+    public function user()
+    {
         $user = Auth::user();
-        if($user){
+        if ($user) {
             $startup = Startup::where('admin_id', $user->id)->first();
-            $countPosts=Publication::where("user_id",$user->id)->get()->count();
-            return response()->json(['user' => $user, 'startup' => $startup, 'countPosts'=>$countPosts]);
+            $countPosts = Publication::where("user_id", $user->id)->get()->count();
+            return response()->json(['user' => $user, 'startup' => $startup, 'countPosts' => $countPosts]);
 
-        }
-        else {
-            $data=[
-                'status'=>401,
-                'message'=>'User not authentificated'
+        } else {
+            $data = [
+                'status' => 401,
+                'message' => 'User not authentificated',
             ];
-            return response()->json($data,401);
+            return response()->json($data, 401);
         }
-       
+
     }
 
+    public function userById($userId)
+    {
+        try {
+            $user = User::findOrFail($userId);
 
-   public function userById($userId){
-    try {
-        $user = User::findOrFail($userId);
-
-        return response()->json($user);
-    } catch (\Exception $e) {
-        $errorData = [
-            'status' => 500,
-            'error' => 'Internal Server Error',
-            'message' => $e->getMessage()
-        ];
-        return response()->json($errorData, 500);
+            return response()->json($user);
+        } catch (\Exception $e) {
+            $errorData = [
+                'status' => 500,
+                'error' => 'Internal Server Error',
+                'message' => $e->getMessage(),
+            ];
+            return response()->json($errorData, 500);
+        }
     }
-}
-
-
-
-
-//    public function getStartupDetailsForUser(Request $request)
-//     {
-//         $user = $request->user();
-//         $startup = Startup::where('admin_id', $user->id)->first();
-//         return response()->json($startup);
-//     }
-
 
     public function getStartupDetailsForUserById($userId)
     {
@@ -185,7 +171,6 @@ class AuthController extends Controller
         return response()->json($startup);
     }
 
-
     public function logout()
     {
         auth()->logout();
@@ -193,6 +178,5 @@ class AuthController extends Controller
             'message' => 'User  logged out',
         ]);
     }
-
 
 }
