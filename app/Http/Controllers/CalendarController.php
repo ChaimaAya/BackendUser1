@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Task;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Notifications\CalendrierDBNotify;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 
@@ -17,7 +17,6 @@ class CalendarController extends Controller
         $tasks = Task::all();
         return response()->json($tasks);
     }
-
 
     public function destroy($id)
     {
@@ -84,18 +83,13 @@ class CalendarController extends Controller
         }
     }
 
-
-
-
-
-
     public function getTaskEnAttente()
     {
         if (Auth::check()) {
             $userId = Auth::id();
             $tasks = Task::where('assigned_to', $userId)
-                         ->where('etat', 'en_attente')
-                         ->get();
+                ->where('etat', 'en_attente')
+                ->get();
 
             return response()->json($tasks, 200);
         } else {
@@ -148,34 +142,23 @@ class CalendarController extends Controller
         return response()->json($task, 200);
     }
 
-
-
     public function getMessage($id)
     {
         $user_auth_id = 2;
 
-        // Recherche de l'utilisateur correspondant à l'ID donné
         $user = User::find($id);
 
-        // Vérifier si l'utilisateur existe
         if ($user) {
-            // Vérifier si l'utilisateur authentifié correspond à l'utilisateur donné
             if ($user_auth_id === $id) {
                 return response()->json(['Message' => 'Rendez-vous avec ' . $user->name]);
             } else {
-                return response()->json(['Message' =>$user_auth_id ], 403);
+                return response()->json(['Message' => $user_auth_id], 403);
             }
         } else {
             return response()->json(['Message' => 'User not found'], 404);
         }
 
     }
-
-
-
-
-
-
 
     public function store(Request $request)
     {
@@ -208,22 +191,4 @@ class CalendarController extends Controller
         }
     }
 
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

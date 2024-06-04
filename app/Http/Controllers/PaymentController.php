@@ -79,7 +79,6 @@ class PaymentController extends Controller
             return response()->json(['error' => 'Utilisateur non authentifié'], 401);
         }
     }
-    //ne pas utiliser
     public function verifyPayment($payment_id)
     {
         $url = 'https://developers.flouci.com/api/verify_payment/' . $payment_id;
